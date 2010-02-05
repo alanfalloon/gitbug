@@ -30,4 +30,6 @@ section
 	OCAMLPACKS[] = pcre unix netstring
 	OCamlProgram(gitbug, src/prelude src/gitbug)
 
-.DEFAULT: gitbug$(EXE)
+GITBUG=$(file gitbug$(EXE))
+
+.DEFAULT: $(GITBUG)
