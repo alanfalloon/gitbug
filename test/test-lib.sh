@@ -2,6 +2,9 @@
 #
 # Copyright (c) 2005 Junio C Hamano
 #
+# This file is licensed under a different license than the rest of
+# this project. See the file LICENSE.test-lib.sh in the root of the
+# project.
 
 # if --tee was passed, write the output not only to the terminal, but
 # additionally to the file test-results/$BASENAME.out, too.
