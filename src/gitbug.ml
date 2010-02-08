@@ -255,16 +255,16 @@ let close_bug fn =
   add_symlink `Close fn;
   remove_symlink `Open fn
 
+let digest_of_id s =
+  let s = first (split "_" s) in
+    String.sub s 0 (min 7 (String.length s))
+
 let git_bug_add = git_do (fun name ->
   let (id, bug) = new_bug_file name in
   writeFile bug (Ticket.string name `Open @@ template "add" name);
   git_edit bug;
   open_bug bug;
-  git_commit (sprintf "BUG added: [%s] %s" id name))
-
-let digest_of_id s =
-  let s = first (split "_" s) in
-    String.sub s 0 (min 7 (String.length s))
+  git_commit (sprintf "BUG added: [%s] %s" (digest_of_id id) name))
 
 let git_bug_autoclose = git_do (fun bugs ->
   bugs |> iter begin fun id ->
