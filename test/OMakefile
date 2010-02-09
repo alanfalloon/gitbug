@@ -1,5 +1,5 @@
 
-TESTS=$(glob test-*.sh)
+TESTS=$(glob t[0-9][0-9][0-9][0-9]-*.sh)
 TEST_FLAGS=$(replacesuffixes .sh,.flag,$(TESTS))
 
 .PHONY: test
@@ -7,10 +7,6 @@ test: $(TEST_FLAGS)
 
 setenv(PATH,$"$(absname $(dirof $(GITBUG))):$(getenv PATH)")
 foreach(T, $(TESTS))
-	BASE=$(removesuffix $T)
-	DIR=$(dir $(BASE).dir)
-	$(BASE).flag: $T $(GITBUG)
-		rm -rf $(DIR)
-		mkdir $(DIR)
-		(cd $(DIR) && ../$<)
+	$(replacesuffixes .sh,.flag,$T): $T $(GITBUG) test-lib.sh
+		./$<
 		touch $@
