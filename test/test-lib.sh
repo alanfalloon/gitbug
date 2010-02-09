@@ -539,7 +539,7 @@ test_create_repo () {
 	repo="$1"
 	mkdir -p "$repo"
 	cd "$repo" || error "Cannot setup test environment"
-	"$GIT_EXEC_PATH/git-init" "--template=$TEST_DIRECTORY/../templates/blt/" >&3 2>&4 ||
+	"$GIT_EXEC_PATH/git" "init" >&3 2>&4 ||
 	error "cannot run git init -- have you built things yet?"
 	mv .git/hooks .git/hooks-disabled
 	cd "$owd"
@@ -549,7 +549,7 @@ test_done () {
 	GIT_EXIT_OK=t
 	test_results_dir="$TEST_DIRECTORY/test-results"
 	mkdir -p "$test_results_dir"
-	test_results_path="$test_results_dir/${0%.sh}-$$"
+	test_results_path="$test_results_dir/$(basename "$0" .sh)-$$"
 
 	echo "total $test_count" >> $test_results_path
 	echo "success $test_success" >> $test_results_path
@@ -586,6 +586,7 @@ test_done () {
 	esac
 }
 
+GIT_TEST_INSTALLED=$(dirname $(which git))
 # Test the binaries we have just built.  The tests are kept in
 # t/ subdirectory and are run in 'trash directory' subdirectory.
 TEST_DIRECTORY=$(pwd)
@@ -671,34 +672,10 @@ else # normal case, use ../bin-wrappers only unless $with_dashes:
 		PATH="$TEST_DIRECTORY/..:$PATH"
 	fi
 fi
-GIT_TEMPLATE_DIR=$(pwd)/../templates/blt
 unset GIT_CONFIG
 GIT_CONFIG_NOSYSTEM=1
 GIT_CONFIG_NOGLOBAL=1
-export PATH GIT_EXEC_PATH GIT_TEMPLATE_DIR GIT_CONFIG_NOSYSTEM GIT_CONFIG_NOGLOBAL
-
-. ../GIT-BUILD-OPTIONS
-
-GITPERLLIB=$(pwd)/../perl/blib/lib:$(pwd)/../perl/blib/arch/auto/Git
-export GITPERLLIB
-test -d ../templates/blt || {
-	error "You haven't built things yet, have you?"
-}
-
-if test -z "$GIT_TEST_INSTALLED" && test -z "$NO_PYTHON"
-then
-	GITPYTHONLIB="$(pwd)/../git_remote_helpers/build/lib"
-	export GITPYTHONLIB
-	test -d ../git_remote_helpers/build || {
-		error "You haven't built git_remote_helpers yet, have you?"
-	}
-fi
-
-if ! test -x ../test-chmtime; then
-	echo >&2 'You need to build test-chmtime:'
-	echo >&2 'Run "make test-chmtime" in the source (toplevel) directory'
-	exit 1
-fi
+export PATH GIT_EXEC_PATH GIT_CONFIG_NOSYSTEM GIT_CONFIG_NOGLOBAL
 
 # Test repository
 test="trash directory.$(basename "$0" .sh)"
