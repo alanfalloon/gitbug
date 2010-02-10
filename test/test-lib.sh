@@ -165,6 +165,11 @@ error () {
 	exit 1
 }
 
+fail() {
+    say 1>&5 "failure caused by: $*"
+    return 1
+}
+
 say () {
 	say_color info "$*"
 }
