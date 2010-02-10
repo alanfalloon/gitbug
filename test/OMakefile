@@ -10,3 +10,8 @@ foreach(T, $(TESTS))
 	$(replacesuffixes .sh,.flag,$T): $T $(GITBUG) test-lib.sh
 		./$<
 		touch $@
+
+.PHONY: clean
+clean:
+	rm $(TEST_FLAGS)
+	rm -r test-results $(addprefix $"trash directory.", $(removesuffix $(TESTS)))
