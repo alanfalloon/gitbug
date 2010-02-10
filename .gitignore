@@ -10,3 +10,6 @@ gitbug
 gitbug.opt
 
 
+/test/t????-*.flag
+/test/test-results/
+/test/trash directory.*/
